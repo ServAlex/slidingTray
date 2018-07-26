@@ -1,38 +1,62 @@
+// options: assembled, unfolded, optimized
+mode = "assembled"; 
+//mode = "unfolded"; 
+//mode = "optimized"; 
 
+// thickness of the material
 thickness = 4;
+
 innerMargin = 5;
 
+// outter dimensions of the box
 width = (558 - innerMargin)/2;
 length = (468 - innerMargin)/2;
 height = 230/2;
 
+// number of teeth along width, lengh, height
 teethW = 9;
 teethL = 7;
 teethH = 5;
 
+// hole for holding
 handleR = 15;
 handleL = 100;
 handleThickness = 20;
 
-// test wall
-//wall(width, length, thickness, [5, 7, 9, 11], [0, 0, 0, 0]);
-
-tolerance = 0.0;
-
-//assembled = true;
-assembled = false;
+// positive value narrows the teeth, negative - widens them
+tolerance = 0.3;
 
 box();
 
 module box()
 {
-	angle = assembled?90:0;
+	angle = mode=="assembled"?90:0;
 
-	bottom();
-	right(angle);
-	left(angle);
-	rear(angle);
-	front(angle);
+	if(mode!="optimized")
+	{
+		bottom();
+		right(angle);
+		left(angle);
+		rear(angle);
+		front(angle);
+	}
+	else
+	{
+		translate([height, 0, 0])
+		{
+			bottom();
+			right(angle);
+			left(angle);
+		}
+
+		translate([width/2 + width + 1, -height/2 - 1, 0])
+		rotate([0, 0, 180])
+		translate([-width/2, -height/2 - length, 0])
+		rear(angle);
+		
+		translate([0, -1, 0])
+		front(angle);
+	}
 }
 
 module bottom()
@@ -86,7 +110,8 @@ module rear(angle)
 	wall(width, height, thickness, [teethW, teethH, 0, teethH], [1, 1, 0, 1]);
 }
 
-// conf - 4 values showing number of teeth, 0 - teeth are not cut
+// teethConf - 4 values showing number of teeth, 0 - teeth are not cut
+// teethOddity - 4 values, 0 for even teeth, 1 - for odd
 module wall(x, y, thickness, teethConf, teethOddity)
 {
 	difference()
@@ -113,6 +138,7 @@ module wall(x, y, thickness, teethConf, teethOddity)
 	}
 }
 
+// tool for cutting teeth
 module cutter(length, count, thickness, odd = true)
 {
 	for(i = [0:count])
