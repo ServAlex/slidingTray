@@ -1,17 +1,22 @@
 // options: assembled, unfolded, optimized
-mode = "assembled"; 
-//mode = "unfolded"; 
-//mode = "optimized"; 
+//mode = "assembled"; 	// box representation
+mode = "unfolded"; 	// parts are layed flat
+//mode = "optimized"; 	// parts are layed flat and positioned to minimize waste material
+//mode = "projection"; 	// projection of optimized mode, for exporting dxf
 
 // thickness of the material
 thickness = 4;
 
+// personal calculations, remove it and directly set width, length, height
 innerMargin = 5;
+w = (558 - innerMargin)/2;
+l = (468 - innerMargin)/2;
+h = 230/2;
 
 // outter dimensions of the box
-width = (558 - innerMargin)/2;
-length = (468 - innerMargin)/2;
-height = 230/2;
+width = w;
+length = l;
+height = h;
 
 // number of teeth along width, lengh, height
 teethW = 9;
@@ -26,13 +31,17 @@ handleThickness = 20;
 // positive value narrows the teeth, negative - widens them
 tolerance = 0.3;
 
-box();
+if(mode=="projection")
+	projection()
+	box();
+else
+	box();
 
 module box()
 {
 	angle = mode=="assembled"?90:0;
 
-	if(mode!="optimized")
+	if(mode!="optimized" && mode!="projection")
 	{
 		bottom();
 		right(angle);
