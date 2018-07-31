@@ -18,6 +18,12 @@ width = w;
 length = l;
 height = h;
 
+echo("Package size:");
+echo(str(w*2+1, " x ", h + l + 1));
+
+echo("Box dimensions");
+echo(str(w, " x ", l, " x ", h));
+
 // number of teeth along width
 teethW = 9;
 // number of teeth along length
@@ -57,20 +63,23 @@ module box()
 	}
 	else
 	{
-		translate([height, 0, 0])
+		translate([0, height + 1, 0])
 		{
-			bottom();
-			right(angle);
-			left(angle);
-		}
+			translate([height, 0, 0])
+			{
+				bottom();
+				right(angle);
+				left(angle);
+			}
 
-		translate([width/2 + width + 1, -height/2 - 1, 0])
-		rotate([0, 0, 180])
-		translate([-width/2, -height/2 - length, 0])
-		rear(angle);
-		
-		translate([0, -1, 0])
-		front(angle);
+			translate([width/2 + width + 1, -height/2 - 1, 0])
+			rotate([0, 0, 180])
+			translate([-width/2, -height/2 - length, 0])
+			rear(angle);
+			
+			translate([0, -1, 0])
+			front(angle);
+		}
 	}
 }
 
